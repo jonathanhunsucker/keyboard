@@ -67,6 +67,36 @@ function useKeyboard(audioContext, voice) {
   ]
 }
 
+function useKeyboardMonitor(onPress, onRelease) {
+  const [keysDownCurrently, setKeysDownCurrently] = useState([]);
+
+  const down = (event) => {
+    if (event.repeat === true || event.altKey === true || event.ctrlKey === true || event.metaKey === true) {
+      return;
+    }
+
+    setKeysDownCurrently(keysDownCurrently.concat([event.code]));
+    onPress(event.code);
+  };
+
+  const up = (event) => {
+    setKeysDownCurrently(keysDownCurrently.filter((code) => code !== event.code));
+    onRelease(event.code);
+  };
+
+  useEffect(() => {
+    document.addEventListener('keyup', up);
+    document.addEventListener('keydown', down);
+
+    return () => {
+      document.removeEventListener('keyup', up);
+      document.removeEventListener('keydown', down);
+    };
+  }, []);// bad practice to tell react not to teardown this effect, but with teardown, some key events are missed
+
+  return keysDownCurrently;
+}
+
 function App() {
   const voice = new Gain(
     .1,
@@ -83,11 +113,7 @@ function App() {
   const audioContext = useAudioContext();
   const [pressed, press, release] = useKeyboard(audioContext, voice);
 
-  const down = (event) => {
-    if (event.repeat === true) {
-      return;
-    }
-
+  const onPress = (code) => {
     const steps = keyCodeToStepsFromMiddleA(event.code);
     if (steps === false) {
       return;
@@ -96,7 +122,7 @@ function App() {
     press(Note.fromStepsFromMiddleA(steps));
   };
 
-  const up = (event) => {
+  const onRelease = (code) => {
     const steps = keyCodeToStepsFromMiddleA(event.code);
     if (steps === false) {
       return;
@@ -105,15 +131,7 @@ function App() {
     release(Note.fromStepsFromMiddleA(steps));
   };
 
-  useEffect(() => {
-    document.addEventListener('keydown', down);
-    document.addEventListener('keyup', up);
-
-    return () => {
-      document.removeEventListener('keydown', down);
-      document.removeEventListener('keyup', up);
-    };
-  });
+  const keysDownCurrently = useKeyboardMonitor(onPress, onRelease);
 
   return (
     <div className="App">
