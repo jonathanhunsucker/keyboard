@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Note } from "@jonathanhunsucker/music-js";
 import { Gain, Envelope, Wave, silentPingToWakeAutoPlayGates } from "@jonathanhunsucker/audio-js";
 import "./App.css";
@@ -45,24 +45,53 @@ function useAudioContext() {
   return ref.current;
 }
 
-const context = new (window.webkitAudioContext || window.AudioContext)();
+function useKeyboard(audioContext, voice) {
+  const [pressed, setPressed] = useState({});
 
-const voice = new Gain(
-  1,
-  [
-    new Envelope(
-      {},
-      [
-        new Wave('triangle'),
-      ],
-    ),
+  const press = (note) => {
+    const binding = voice.bind(note.frequency);
+    const addendum = {};
+    addendum[note.pitch] = binding;
+    const newSet = Object.assign({}, pressed, addendum);
+    binding.play(audioContext, audioContext.destination);
+    console.log('added binding for ' + note.pitch);
+    setPressed(newSet);
+  };
+
+  const release = (note) => {
+    if (pressed.hasOwnProperty(note.pitch) === false) {
+      return;
+    }
+
+    const binding = pressed[note.pitch];
+    binding.stop(audioContext);
+    delete pressed[note.pitch];
+    console.log('removed binding for ' + note.pitch);
+    setPressed(pressed);
+  };
+
+  return [
+    pressed,
+    press,
+    release,
   ]
-);
-
-const set = {};
+}
 
 function App() {
+  const voice = new Gain(
+    .1,
+    [
+      new Envelope(
+        {},
+        [
+          new Wave('triangle'),
+        ],
+      ),
+    ]
+  );
+
   const audioContext = useAudioContext();
+  const [pressed, press, release] = useKeyboard(audioContext, voice);
 
   const down = (event) => {
     const steps = keyCodeToStepsFromMiddleA(event.code);
@@ -70,10 +99,7 @@ function App() {
       return;
     }
 
-    const note = Note.fromStepsFromMiddleA(steps);
-    const binding = voice.bind(note.frequency);
-    set[event.code] = binding;
-    binding.play(audioContext, audioContext.destination);
+    press(Note.fromStepsFromMiddleA(steps));
   };
 
   const up = (event) => {
@@ -82,18 +108,9 @@ function App() {
       return;
     }
 
-    if (set.hasOwnProperty(event.code) === false) {
-      return;
-    }
-
-    const binding = set[event.code];
-    binding.stop(audioContext);
-    delete set[event.code];
+    release(Note.fromStepsFromMiddleA(steps));
   };
 
-  const click = (event) => {
-    voice.press(context, new Note('C4').frequency);
-  };
 
   document.addEventListener('keydown', down);
   document.addEventListener('keyup', up);
