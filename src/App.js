@@ -67,6 +67,93 @@ function useKeyboard(audioContext, voice) {
   ]
 }
 
+function Keyboard(props) {
+  function key(label, code, span) {
+    span = span || 3;
+    return <td colSpan={span}>{props.pressed.indexOf(code) !== -1 ? <b>{label}</b> : (label)}</td>;
+  }
+
+  return (
+    <table>
+      <tbody>
+        <tr>
+          {key("`", "Backquote")}
+          {key("1", "Digit1")}
+          {key("2", "Digit2")}
+          {key("3", "Digit3")}
+          {key("4", "Digit4")}
+          {key("5", "Digit5")}
+          {key("6", "Digit6")}
+          {key("7", "Digit7")}
+          {key("8", "Digit8")}
+          {key("9", "Digit9")}
+          {key("0", "Digit0")}
+          {key("-", "Minus")}
+          {key("=", "Equal")}
+          {key("delete", "Backspace")}
+        </tr>
+        <tr>
+          {key("tab", "Tab", 4)}
+          {key("q", "KeyQ")}
+          {key("w", "KeyW")}
+          {key("e", "KeyE")}
+          {key("r", "KeyR")}
+          {key("t", "KeyT")}
+          {key("y", "KeyY")}
+          {key("u", "KeyU")}
+          {key("i", "KeyI")}
+          {key("o", "KeyO")}
+          {key("p", "KeyP")}
+          {key("[", "BracketLeft")}
+          {key("]", "BracketRight")}
+          {key("\\", "Backslash")}
+        </tr>
+        <tr>
+          {key("caps lock", "", 5)}
+          {key("a", "KeyA")}
+          {key("s", "KeyS")}
+          {key("d", "KeyD")}
+          {key("f", "KeyF")}
+          {key("g", "KeyG")}
+          {key("h", "KeyH")}
+          {key("j", "KeyJ")}
+          {key("k", "KeyK")}
+          {key("l", "KeyL")}
+          {key(";", "Semicolon")}
+          {key("&#39;", "Quote")}
+          {key("return", "Enter")}
+        </tr>
+        <tr>
+          {key("shift", "ShiftLeft", 6)}
+          {key("z", "KeyZ")}
+          {key("x", "KeyX")}
+          {key("c", "KeyC")}
+          {key("v", "KeyV")}
+          {key("b", "KeyB")}
+          {key("n", "KeyN")}
+          {key("m", "KeyM")}
+          {key(",", "Comma")}
+          {key(".", "Period")}
+          {key("/", "Slash")}
+          {key("shift", "ShiftRight", 6)}
+        </tr>
+        <tr>
+          {key("control", "ControlLeft")}
+          {key("alt", "AltLeft")}
+          {key("cmd", "MetaLeft")}
+          {key("space", "Space", 16)}
+          {key("cmd", "MetaRight")}
+          {key("option", "AltRight")}
+          {key("left", "ArrowLeft")}
+          {key("down", "ArrowDown")}
+          {key("up", "ArrowUp")}
+          {key("right", "ArrowRight")}
+        </tr>
+      </tbody>
+    </table>
+  );
+}
+
 function useKeyboardMonitor(onPress, onRelease) {
   const [keysDownCurrently, setKeysDownCurrently] = useState([]);
 
@@ -136,6 +223,7 @@ function App() {
   return (
     <div className="App">
       <h1>Keyboard</h1>
+      <Keyboard pressed={keysDownCurrently} />
     </div>
   );
 }
