@@ -94,6 +94,10 @@ function App() {
   const [pressed, press, release] = useKeyboard(audioContext, voice);
 
   const down = (event) => {
+    if (event.repeat === true) {
+      return;
+    }
+
     const steps = keyCodeToStepsFromMiddleA(event.code);
     if (steps === false) {
       return;
