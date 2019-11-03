@@ -46,32 +46,22 @@ function useAudioContext() {
 }
 
 function useKeyboard(audioContext, voice) {
-  const [pressed, setPressed] = useState({});
+  const pressed = useRef([]);
 
   const press = (note) => {
     const binding = voice.bind(note.frequency);
-    const addendum = {};
-    addendum[note.pitch] = binding;
-    const newSet = Object.assign({}, pressed, addendum);
     binding.play(audioContext, audioContext.destination);
-    console.log('added binding for ' + note.pitch);
-    setPressed(newSet);
+    pressed.current.push([note.pitch, binding]);
   };
 
   const release = (note) => {
-    if (pressed.hasOwnProperty(note.pitch) === false) {
-      return;
-    }
-
-    const binding = pressed[note.pitch];
-    binding.stop(audioContext);
-    delete pressed[note.pitch];
-    console.log('removed binding for ' + note.pitch);
-    setPressed(pressed);
+    const candidates = pressed.current.filter((pair) => pair[0] === note.pitch);
+    candidates[0][1].stop(audioContext);
+    pressed.current = pressed.current.filter((pair) => pair[0] !== note.pitch);
   };
 
   return [
-    pressed,
+    pressed.current,
     press,
     release,
   ]
