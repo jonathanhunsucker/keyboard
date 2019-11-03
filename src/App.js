@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Note } from "@jonathanhunsucker/music-js";
 import { Gain, Envelope, Wave, silentPingToWakeAutoPlayGates } from "@jonathanhunsucker/audio-js";
 import "./App.css";
@@ -115,9 +115,15 @@ function App() {
     release(Note.fromStepsFromMiddleA(steps));
   };
 
+  useEffect(() => {
+    document.addEventListener('keydown', down);
+    document.addEventListener('keyup', up);
 
-  document.addEventListener('keydown', down);
-  document.addEventListener('keyup', up);
+    return () => {
+      document.removeEventListener('keydown', down);
+      document.removeEventListener('keyup', up);
+    };
+  });
 
   return (
     <div className="App">
