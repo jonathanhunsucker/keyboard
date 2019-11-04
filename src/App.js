@@ -3,33 +3,33 @@ import { Note } from "@jonathanhunsucker/music-js";
 import { Gain, Envelope, Wave, silentPingToWakeAutoPlayGates } from "@jonathanhunsucker/audio-js";
 import "./App.css";
 
-function keyCodeToStepsFromMiddleA(code) {
+function keyCodeToNote(code) {
   const mapping = {
-    'KeyZ': 3,
-    'KeyS': 4,
-    'KeyX': 5,
-    'KeyD': 6,
-    'KeyC': 7,
-    'KeyV': 8,
-    'KeyG': 9,
-    'KeyB': 10,
-    'KeyH': 11,
-    'KeyN': 12,
-    'KeyJ': 13,
-    'KeyM': 14,
+    'KeyZ': Note.fromStepsFromMiddleA(3),
+    'KeyS': Note.fromStepsFromMiddleA(4),
+    'KeyX': Note.fromStepsFromMiddleA(5),
+    'KeyD': Note.fromStepsFromMiddleA(6),
+    'KeyC': Note.fromStepsFromMiddleA(7),
+    'KeyV': Note.fromStepsFromMiddleA(8),
+    'KeyG': Note.fromStepsFromMiddleA(9),
+    'KeyB': Note.fromStepsFromMiddleA(10),
+    'KeyH': Note.fromStepsFromMiddleA(11),
+    'KeyN': Note.fromStepsFromMiddleA(12),
+    'KeyJ': Note.fromStepsFromMiddleA(13),
+    'KeyM': Note.fromStepsFromMiddleA(14),
 
-    'KeyQ': 15,
-    'Digit2': 16,
-    'KeyW': 17,
-    'Digit3': 18,
-    'KeyE': 19,
-    'KeyR': 20,
-    'Digit5': 21,
-    'KeyT': 22,
-    'Digit6': 23,
-    'KeyY': 24,
-    'Digit7': 25,
-    'KeyU': 26,
+    'KeyQ': Note.fromStepsFromMiddleA(15),
+    'Digit2': Note.fromStepsFromMiddleA(16),
+    'KeyW': Note.fromStepsFromMiddleA(17),
+    'Digit3': Note.fromStepsFromMiddleA(18),
+    'KeyE': Note.fromStepsFromMiddleA(19),
+    'KeyR': Note.fromStepsFromMiddleA(20),
+    'Digit5': Note.fromStepsFromMiddleA(21),
+    'KeyT': Note.fromStepsFromMiddleA(22),
+    'Digit6': Note.fromStepsFromMiddleA(23),
+    'KeyY': Note.fromStepsFromMiddleA(24),
+    'Digit7': Note.fromStepsFromMiddleA(25),
+    'KeyU': Note.fromStepsFromMiddleA(26),
   };
 
   if (mapping.hasOwnProperty(code) === false) {
@@ -201,21 +201,21 @@ function App() {
   const [pressed, press, release] = useKeyboard(audioContext, voice);
 
   const onPress = (code) => {
-    const steps = keyCodeToStepsFromMiddleA(event.code);
-    if (steps === false) {
+    const note = keyCodeToNote(event.code);
+    if (note === false) {
       return;
     }
 
-    press(Note.fromStepsFromMiddleA(steps));
+    press(note);
   };
 
   const onRelease = (code) => {
-    const steps = keyCodeToStepsFromMiddleA(event.code);
-    if (steps === false) {
+    const note = keyCodeToNote(event.code);
+    if (note === false) {
       return;
     }
 
-    release(Note.fromStepsFromMiddleA(steps));
+    release(note);
   };
 
   const keysDownCurrently = useKeyboardMonitor(onPress, onRelease);
