@@ -209,12 +209,12 @@ function useKeyboardMonitor(onPress, onRelease) {
       return;
     }
 
-    setKeysDownCurrently(keysDownCurrently.concat([event.code]));
+    setKeysDownCurrently(k => k.concat([event.code]));
     onPress(event.code);
   };
 
   const up = (event) => {
-    setKeysDownCurrently(keysDownCurrently.filter((code) => code !== event.code));
+    setKeysDownCurrently(k => k.filter((code) => code !== event.code));
     onRelease(event.code);
   };
 
@@ -226,7 +226,7 @@ function useKeyboardMonitor(onPress, onRelease) {
       document.removeEventListener('keyup', up);
       document.removeEventListener('keydown', down);
     };
-  }, []);// bad practice to tell react not to teardown this effect, but with teardown, some key events are missed
+  });
 
   return keysDownCurrently;
 }
