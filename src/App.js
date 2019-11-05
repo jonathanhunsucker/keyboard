@@ -64,8 +64,10 @@ function useKeyboardMonitor(onPress, onRelease) {
 }
 
 function App() {
+  const [level, setLevel] = useState(0.1);
+
   const voice = new Gain(
-    .1,
+    level,
     [
       new Envelope(
         {},
@@ -138,6 +140,7 @@ function App() {
     <div className="App">
       <h1>Keyboard</h1>
       <p>Shift: {shift}</p>
+      <p>Level: <input type="range" min="0" step="0.01" max="1.0" value={level} onChange={(e) => {setLevel(e.target.valueAsNumber)}} /></p>
       <Keyboard mapping={mapping} pressed={keysDownCurrently} />
     </div>
   );

@@ -1,2 +1,6 @@
 .App {
 }
+
+input[type="range"] {
+  vertical-align: middle;
+}
