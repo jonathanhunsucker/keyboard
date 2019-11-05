@@ -84,7 +84,7 @@ function useKeyboardMonitor(onPress, onRelease) {
       document.removeEventListener('keyup', up);
       document.removeEventListener('keydown', down);
     };
-  });
+  }, []);
 
   return keysDownCurrently;
 }
