@@ -1,42 +1,32 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Note } from "@jonathanhunsucker/music-js";
 import { Gain, Envelope, Wave, silentPingToWakeAutoPlayGates } from "@jonathanhunsucker/audio-js";
+import Keyboard from "./Keyboard.js";
 import "./App.css";
 
-function keyCodeToNote(code) {
-  const mapping = {
-    'KeyZ': Note.fromStepsFromMiddleA(3),
-    'KeyS': Note.fromStepsFromMiddleA(4),
-    'KeyX': Note.fromStepsFromMiddleA(5),
-    'KeyD': Note.fromStepsFromMiddleA(6),
-    'KeyC': Note.fromStepsFromMiddleA(7),
-    'KeyV': Note.fromStepsFromMiddleA(8),
-    'KeyG': Note.fromStepsFromMiddleA(9),
-    'KeyB': Note.fromStepsFromMiddleA(10),
-    'KeyH': Note.fromStepsFromMiddleA(11),
-    'KeyN': Note.fromStepsFromMiddleA(12),
-    'KeyJ': Note.fromStepsFromMiddleA(13),
-    'KeyM': Note.fromStepsFromMiddleA(14),
-
-    'KeyQ': Note.fromStepsFromMiddleA(15),
-    'Digit2': Note.fromStepsFromMiddleA(16),
-    'KeyW': Note.fromStepsFromMiddleA(17),
-    'Digit3': Note.fromStepsFromMiddleA(18),
-    'KeyE': Note.fromStepsFromMiddleA(19),
-    'KeyR': Note.fromStepsFromMiddleA(20),
-    'Digit5': Note.fromStepsFromMiddleA(21),
-    'KeyT': Note.fromStepsFromMiddleA(22),
-    'Digit6': Note.fromStepsFromMiddleA(23),
-    'KeyY': Note.fromStepsFromMiddleA(24),
-    'Digit7': Note.fromStepsFromMiddleA(25),
-    'KeyU': Note.fromStepsFromMiddleA(26),
-  };
-
-  if (mapping.hasOwnProperty(code) === false) {
-    return false;
+class Mapping {
+  constructor(mapping) {
+    this.mapping = mapping;
   }
+  contains(code) {
+    return this.mapping.hasOwnProperty(code);
+  }
+  onPress(code) {
+    if (this.contains(code) === false) {
+      return;
+    }
 
-  return mapping[code];
+    const handler = this.mapping[code][0];
+    handler();
+  }
+  onRelease(code) {
+    if (this.contains(code) === false) {
+      return;
+    }
+
+    const handler = this.mapping[code][1];
+    handler();
+  }
 }
 
 function useAudioContext() {
@@ -65,140 +55,6 @@ function useKeyboard(audioContext, voice) {
     press,
     release,
   ]
-}
-
-function Keyboard(props) {
-  function codeToColor(code) {
-    if (code === null) {
-      return "transparent";
-    }
-
-    if (keyCodeToNote(code) === false) {
-      return "lightgrey";
-    }
-
-    if (props.pressed.indexOf(code) === -1) {
-      return "grey";
-    }
-
-    return "black";
-  }
-
-  function asdf(code, label) {
-    if (keyCodeToNote(code) === false) {
-      return "";
-    }
-
-    if (props.pressed.indexOf(code) === -1) {
-      return label;
-    }
-
-    return <b>{label}</b>;
-  }
-
-  function key(label, code, span) {
-    span = span || 1;
-    const basis = 6;
-    const width = span * basis;
-
-    return (
-      <div style={{
-        background: codeToColor(code),
-        float: "left",
-        color: "white",
-        display: "inline-block",
-        minWidth: `${width}vw`,
-        lineHeight: `${width}vw`,
-        minHeight: `${basis}vw`,
-        margin: "0.1vw",
-        textAlign: "center",
-        verticalAlign: "middle",
-      }}>
-        {asdf(code, label)}
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <div style={{overflow: "auto", with: "100%"}}>
-        {key("`", null && "Backquote")}
-        {key("1", "Digit1")}
-        {key("2", "Digit2")}
-        {key("3", "Digit3")}
-        {key("4", "Digit4")}
-        {key("5", "Digit5")}
-        {key("6", "Digit6")}
-        {key("7", "Digit7")}
-        {key("8", "Digit8")}
-        {key("9", "Digit9")}
-        {key("0", "Digit0")}
-        {key("-", "Minus")}
-        {key("=", "Equal")}
-        {key("delete", null && "Backspace", 1.5)}
-      </div>
-      <div style={{overflow: "auto", with: "100%"}}>
-        {key("tab", null && "Tab", 1.5)}
-        {key("q", "KeyQ")}
-        {key("w", "KeyW")}
-        {key("e", "KeyE")}
-        {key("r", "KeyR")}
-        {key("t", "KeyT")}
-        {key("y", "KeyY")}
-        {key("u", "KeyU")}
-        {key("i", "KeyI")}
-        {key("o", "KeyO")}
-        {key("p", "KeyP")}
-        {key("[", "BracketLeft")}
-        {key("]", "BracketRight")}
-        {key("\\", null && "Backslash")}
-      </div>
-      <div style={{overflow: "auto", with: "100%"}}>
-        {key("caps lock", null && "", 1.8)}
-        {key("a", "KeyA")}
-        {key("s", "KeyS")}
-        {key("d", "KeyD")}
-        {key("f", "KeyF")}
-        {key("g", "KeyG")}
-        {key("h", "KeyH")}
-        {key("j", "KeyJ")}
-        {key("k", "KeyK")}
-        {key("l", "KeyL")}
-        {key(";", "Semicolon")}
-        {key("&#39;", "Quote")}
-        {key("return", null && "Enter", 1.8)}
-      </div>
-      <div style={{overflow: "auto", with: "100%"}}>
-        {key("shift", null && "ShiftLeft", 2)}
-        {key("z", "KeyZ")}
-        {key("x", "KeyX")}
-        {key("c", "KeyC")}
-        {key("v", "KeyV")}
-        {key("b", "KeyB")}
-        {key("n", "KeyN")}
-        {key("m", "KeyM")}
-        {key(",", "Comma")}
-        {key(".", "Period")}
-        {key("/", "Slash")}
-        {key("shift", null && "ShiftRight", 2.7)}
-      </div>
-    </div>
-  );
-
-  /*
-        <tr>
-          {key("control", "ControlLeft")}
-          {key("alt", "AltLeft")}
-          {key("cmd", "MetaLeft")}
-          {key("space", "Space", 16)}
-          {key("cmd", "MetaRight")}
-          {key("option", "AltRight")}
-          {key("left", "ArrowLeft")}
-          {key("down", "ArrowDown")}
-          {key("up", "ArrowUp")}
-          {key("right", "ArrowRight")}
-        </tr>
-  */
 }
 
 function useKeyboardMonitor(onPress, onRelease) {
@@ -247,30 +103,57 @@ function App() {
   const audioContext = useAudioContext();
   const [pressed, press, release] = useKeyboard(audioContext, voice);
 
-  const onPress = (code) => {
-    const note = keyCodeToNote(event.code);
-    if (note === false) {
-      return;
-    }
-
-    press(note);
+  const handlePress = (note) => {
+    return () => {
+      press(note);
+    };
   };
 
-  const onRelease = (code) => {
-    const note = keyCodeToNote(event.code);
-    if (note === false) {
-      return;
-    }
-
-    release(note);
+  const handleRelease = (note) => {
+    return () => {
+      release(note);
+    };
   };
 
-  const keysDownCurrently = useKeyboardMonitor(onPress, onRelease);
+  const mapping = new Mapping({
+    'KeyZ': [handlePress(Note.fromStepsFromMiddleA(3)), handleRelease(Note.fromStepsFromMiddleA(3))],
+    'KeyS': [handlePress(Note.fromStepsFromMiddleA(4)), handleRelease(Note.fromStepsFromMiddleA(4))],
+    'KeyX': [handlePress(Note.fromStepsFromMiddleA(5)), handleRelease(Note.fromStepsFromMiddleA(5))],
+    'KeyD': [handlePress(Note.fromStepsFromMiddleA(6)), handleRelease(Note.fromStepsFromMiddleA(6))],
+    'KeyC': [handlePress(Note.fromStepsFromMiddleA(7)), handleRelease(Note.fromStepsFromMiddleA(7))],
+    'KeyV': [handlePress(Note.fromStepsFromMiddleA(8)), handleRelease(Note.fromStepsFromMiddleA(8))],
+    'KeyG': [handlePress(Note.fromStepsFromMiddleA(9)), handleRelease(Note.fromStepsFromMiddleA(9))],
+    'KeyB': [handlePress(Note.fromStepsFromMiddleA(10)), handleRelease(Note.fromStepsFromMiddleA(10))],
+    'KeyH': [handlePress(Note.fromStepsFromMiddleA(11)), handleRelease(Note.fromStepsFromMiddleA(11))],
+    'KeyN': [handlePress(Note.fromStepsFromMiddleA(12)), handleRelease(Note.fromStepsFromMiddleA(12))],
+    'KeyJ': [handlePress(Note.fromStepsFromMiddleA(13)), handleRelease(Note.fromStepsFromMiddleA(13))],
+    'KeyM': [handlePress(Note.fromStepsFromMiddleA(14)), handleRelease(Note.fromStepsFromMiddleA(14))],
+    'Comma': [handlePress(Note.fromStepsFromMiddleA(15)), handleRelease(Note.fromStepsFromMiddleA(15))],
+
+    'KeyQ': [handlePress(Note.fromStepsFromMiddleA(15)), handleRelease(Note.fromStepsFromMiddleA(15))],
+    'Digit2': [handlePress(Note.fromStepsFromMiddleA(16)), handleRelease(Note.fromStepsFromMiddleA(16))],
+    'KeyW': [handlePress(Note.fromStepsFromMiddleA(17)), handleRelease(Note.fromStepsFromMiddleA(17))],
+    'Digit3': [handlePress(Note.fromStepsFromMiddleA(18)), handleRelease(Note.fromStepsFromMiddleA(18))],
+    'KeyE': [handlePress(Note.fromStepsFromMiddleA(19)), handleRelease(Note.fromStepsFromMiddleA(19))],
+    'KeyR': [handlePress(Note.fromStepsFromMiddleA(20)), handleRelease(Note.fromStepsFromMiddleA(20))],
+    'Digit5': [handlePress(Note.fromStepsFromMiddleA(21)), handleRelease(Note.fromStepsFromMiddleA(21))],
+    'KeyT': [handlePress(Note.fromStepsFromMiddleA(22)), handleRelease(Note.fromStepsFromMiddleA(22))],
+    'Digit6': [handlePress(Note.fromStepsFromMiddleA(23)), handleRelease(Note.fromStepsFromMiddleA(23))],
+    'KeyY': [handlePress(Note.fromStepsFromMiddleA(24)), handleRelease(Note.fromStepsFromMiddleA(24))],
+    'Digit7': [handlePress(Note.fromStepsFromMiddleA(25)), handleRelease(Note.fromStepsFromMiddleA(25))],
+    'KeyU': [handlePress(Note.fromStepsFromMiddleA(26)), handleRelease(Note.fromStepsFromMiddleA(26))],
+    'KeyI': [handlePress(Note.fromStepsFromMiddleA(27)), handleRelease(Note.fromStepsFromMiddleA(27))],
+
+    'Minus': [() => console.log('press minus'), () => console.log('release minus')],
+    'Equal': [() => console.log('press equal'), () => console.log('release equal')],
+  });
+
+  const keysDownCurrently = useKeyboardMonitor((code) => mapping.onPress(code), (code) => mapping.onRelease(code));
 
   return (
     <div className="App">
       <h1>Keyboard</h1>
-      <Keyboard pressed={keysDownCurrently} />
+      <Keyboard mapping={mapping} pressed={keysDownCurrently} />
     </div>
   );
 }
