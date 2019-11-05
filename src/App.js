@@ -28,22 +28,22 @@ function useAudioContext() {
 }
 
 function useKeyboard(audioContext, voice) {
-  const pressed = useRef([]);
+  const [pressed, setPressed] = useState([]);
 
   const press = (note) => {
     const binding = voice.bind(note.frequency);
     binding.play(audioContext, audioContext.destination);
-    pressed.current.push([note.pitch, binding]);
+    setPressed((p) => p.concat([[note.pitch, binding]]));
   };
 
   const release = (note) => {
-    const candidates = pressed.current.filter((pair) => pair[0] === note.pitch);
+    const candidates = pressed.filter((pair) => pair[0] === note.pitch);
     candidates[0][1].stop(audioContext);
-    pressed.current = pressed.current.filter((pair) => pair[0] !== note.pitch);
+    setPressed((p) => p.filter((pair) => pair[0] !== note.pitch));
   };
 
   return [
-    pressed.current,
+    pressed,
     press,
     release,
   ]
