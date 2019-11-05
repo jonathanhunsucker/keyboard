@@ -2,32 +2,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { Note } from "@jonathanhunsucker/music-js";
 import { Gain, Envelope, Wave, silentPingToWakeAutoPlayGates } from "@jonathanhunsucker/audio-js";
 import Keyboard from "./Keyboard.js";
+import { Mapping, Handler } from "./KeyCommand.js";
 import "./App.css";
-
-class Mapping {
-  constructor(mapping) {
-    this.mapping = mapping;
-  }
-  contains(code) {
-    return this.mapping.hasOwnProperty(code);
-  }
-  onPress(code) {
-    if (this.contains(code) === false) {
-      return;
-    }
-
-    const handler = this.mapping[code][0];
-    handler();
-  }
-  onRelease(code) {
-    if (this.contains(code) === false) {
-      return;
-    }
-
-    const handler = this.mapping[code][1];
-    handler();
-  }
-}
 
 function useAudioContext() {
   const context = new (window.webkitAudioContext || window.AudioContext)();
@@ -120,37 +96,40 @@ function App() {
     };
   };
 
+  const noteHandler = (note) => new Handler(translate(note).pitch, handlePress(note), handleRelease(note));
+  const actionHandler = (action, label) => new Handler(label, action, () => {});
+
   const mapping = new Mapping({
-    'KeyZ': [handlePress(Note.fromStepsFromMiddleA(3)), handleRelease(Note.fromStepsFromMiddleA(3))],
-    'KeyS': [handlePress(Note.fromStepsFromMiddleA(4)), handleRelease(Note.fromStepsFromMiddleA(4))],
-    'KeyX': [handlePress(Note.fromStepsFromMiddleA(5)), handleRelease(Note.fromStepsFromMiddleA(5))],
-    'KeyD': [handlePress(Note.fromStepsFromMiddleA(6)), handleRelease(Note.fromStepsFromMiddleA(6))],
-    'KeyC': [handlePress(Note.fromStepsFromMiddleA(7)), handleRelease(Note.fromStepsFromMiddleA(7))],
-    'KeyV': [handlePress(Note.fromStepsFromMiddleA(8)), handleRelease(Note.fromStepsFromMiddleA(8))],
-    'KeyG': [handlePress(Note.fromStepsFromMiddleA(9)), handleRelease(Note.fromStepsFromMiddleA(9))],
-    'KeyB': [handlePress(Note.fromStepsFromMiddleA(10)), handleRelease(Note.fromStepsFromMiddleA(10))],
-    'KeyH': [handlePress(Note.fromStepsFromMiddleA(11)), handleRelease(Note.fromStepsFromMiddleA(11))],
-    'KeyN': [handlePress(Note.fromStepsFromMiddleA(12)), handleRelease(Note.fromStepsFromMiddleA(12))],
-    'KeyJ': [handlePress(Note.fromStepsFromMiddleA(13)), handleRelease(Note.fromStepsFromMiddleA(13))],
-    'KeyM': [handlePress(Note.fromStepsFromMiddleA(14)), handleRelease(Note.fromStepsFromMiddleA(14))],
-    'Comma': [handlePress(Note.fromStepsFromMiddleA(15)), handleRelease(Note.fromStepsFromMiddleA(15))],
+    'KeyZ': noteHandler(Note.fromStepsFromMiddleA(3)),
+    'KeyS': noteHandler(Note.fromStepsFromMiddleA(4)),
+    'KeyX': noteHandler(Note.fromStepsFromMiddleA(5)),
+    'KeyD': noteHandler(Note.fromStepsFromMiddleA(6)),
+    'KeyC': noteHandler(Note.fromStepsFromMiddleA(7)),
+    'KeyV': noteHandler(Note.fromStepsFromMiddleA(8)),
+    'KeyG': noteHandler(Note.fromStepsFromMiddleA(9)),
+    'KeyB': noteHandler(Note.fromStepsFromMiddleA(10)),
+    'KeyH': noteHandler(Note.fromStepsFromMiddleA(11)),
+    'KeyN': noteHandler(Note.fromStepsFromMiddleA(12)),
+    'KeyJ': noteHandler(Note.fromStepsFromMiddleA(13)),
+    'KeyM': noteHandler(Note.fromStepsFromMiddleA(14)),
+    'Comma': noteHandler(Note.fromStepsFromMiddleA(15)),
 
-    'KeyQ': [handlePress(Note.fromStepsFromMiddleA(15)), handleRelease(Note.fromStepsFromMiddleA(15))],
-    'Digit2': [handlePress(Note.fromStepsFromMiddleA(16)), handleRelease(Note.fromStepsFromMiddleA(16))],
-    'KeyW': [handlePress(Note.fromStepsFromMiddleA(17)), handleRelease(Note.fromStepsFromMiddleA(17))],
-    'Digit3': [handlePress(Note.fromStepsFromMiddleA(18)), handleRelease(Note.fromStepsFromMiddleA(18))],
-    'KeyE': [handlePress(Note.fromStepsFromMiddleA(19)), handleRelease(Note.fromStepsFromMiddleA(19))],
-    'KeyR': [handlePress(Note.fromStepsFromMiddleA(20)), handleRelease(Note.fromStepsFromMiddleA(20))],
-    'Digit5': [handlePress(Note.fromStepsFromMiddleA(21)), handleRelease(Note.fromStepsFromMiddleA(21))],
-    'KeyT': [handlePress(Note.fromStepsFromMiddleA(22)), handleRelease(Note.fromStepsFromMiddleA(22))],
-    'Digit6': [handlePress(Note.fromStepsFromMiddleA(23)), handleRelease(Note.fromStepsFromMiddleA(23))],
-    'KeyY': [handlePress(Note.fromStepsFromMiddleA(24)), handleRelease(Note.fromStepsFromMiddleA(24))],
-    'Digit7': [handlePress(Note.fromStepsFromMiddleA(25)), handleRelease(Note.fromStepsFromMiddleA(25))],
-    'KeyU': [handlePress(Note.fromStepsFromMiddleA(26)), handleRelease(Note.fromStepsFromMiddleA(26))],
-    'KeyI': [handlePress(Note.fromStepsFromMiddleA(27)), handleRelease(Note.fromStepsFromMiddleA(27))],
+    'KeyQ': noteHandler(Note.fromStepsFromMiddleA(15)),
+    'Digit2': noteHandler(Note.fromStepsFromMiddleA(16)),
+    'KeyW': noteHandler(Note.fromStepsFromMiddleA(17)),
+    'Digit3': noteHandler(Note.fromStepsFromMiddleA(18)),
+    'KeyE': noteHandler(Note.fromStepsFromMiddleA(19)),
+    'KeyR': noteHandler(Note.fromStepsFromMiddleA(20)),
+    'Digit5': noteHandler(Note.fromStepsFromMiddleA(21)),
+    'KeyT': noteHandler(Note.fromStepsFromMiddleA(22)),
+    'Digit6': noteHandler(Note.fromStepsFromMiddleA(23)),
+    'KeyY': noteHandler(Note.fromStepsFromMiddleA(24)),
+    'Digit7': noteHandler(Note.fromStepsFromMiddleA(25)),
+    'KeyU': noteHandler(Note.fromStepsFromMiddleA(26)),
+    'KeyI': noteHandler(Note.fromStepsFromMiddleA(27)),
 
-    'Minus': [() => setShift((s) => s - 12), () => {}],
-    'Equal': [() => setShift((s) => s + 12), () => {}],
+    'Minus': actionHandler(() => setShift((s) => s - 12), '-'),
+    'Equal': actionHandler(() => setShift((s) => s + 12), '+'),
   });
 
   const keysDownCurrently = useKeyboardMonitor((code) => mapping.onPress(code), (code) => mapping.onRelease(code));

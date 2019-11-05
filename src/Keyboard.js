@@ -47,7 +47,7 @@ export default function Keyboard(props) {
         textAlign: "center",
         verticalAlign: "middle",
       }}>
-        {asdf(code, label)}
+        {asdf(code, props.mapping.label(code))}
       </div>
     );
   }
