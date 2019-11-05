@@ -102,16 +102,21 @@ function App() {
 
   const audioContext = useAudioContext();
   const [pressed, press, release] = useKeyboard(audioContext, voice);
+  const [shift, setShift] = useState(0);
+
+  const translate = (note) => {
+    return Note.fromStepsFromMiddleA(note.stepsFromMiddleA + shift);
+  };
 
   const handlePress = (note) => {
     return () => {
-      press(note);
+      press(translate(note));
     };
   };
 
   const handleRelease = (note) => {
     return () => {
-      release(note);
+      release(translate(note));
     };
   };
 
@@ -144,8 +149,8 @@ function App() {
     'KeyU': [handlePress(Note.fromStepsFromMiddleA(26)), handleRelease(Note.fromStepsFromMiddleA(26))],
     'KeyI': [handlePress(Note.fromStepsFromMiddleA(27)), handleRelease(Note.fromStepsFromMiddleA(27))],
 
-    'Minus': [() => console.log('press minus'), () => console.log('release minus')],
-    'Equal': [() => console.log('press equal'), () => console.log('release equal')],
+    'Minus': [() => setShift((s) => s - 12), () => {}],
+    'Equal': [() => setShift((s) => s + 12), () => {}],
   });
 
   const keysDownCurrently = useKeyboardMonitor((code) => mapping.onPress(code), (code) => mapping.onRelease(code));
@@ -153,6 +158,7 @@ function App() {
   return (
     <div className="App">
       <h1>Keyboard</h1>
+      <p>Shift: {shift}</p>
       <Keyboard mapping={mapping} pressed={keysDownCurrently} />
     </div>
   );
