@@ -5,6 +5,22 @@ import Keyboard from "./Keyboard.js";
 import { Mapping, Handler } from "./KeyCommand.js";
 import "./App.css";
 
+class Timer {
+  constructor(name, startedAt) {
+    this.name = name;
+    this.startedAt = startedAt;
+  }
+  static start(name) {
+    return new Timer(name, Date.now());
+  }
+  get elapsed() {
+    return Date.now() - this.startedAt;
+  }
+  record() {
+    console.log(`${this.name} took ${this.elapsed}`);
+  }
+}
+
 function useAudioContext() {
   const context = new (window.webkitAudioContext || window.AudioContext)();
   const ref = useRef(context);
