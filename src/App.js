@@ -54,18 +54,26 @@ function useKeyboard(audioContext, voice) {
 function useKeyboardMonitor(onPress, onRelease) {
   const [keysDownCurrently, setKeysDownCurrently] = useState([]);
 
+  const onPressReference = useRef(onPress);
+  const onReleaseReference = useRef(onRelease);
+
+  useEffect(() => {
+    onPressReference.current = onPress;
+    onReleaseReference.current = onRelease;
+  });
+
   const down = (event) => {
     if (event.repeat === true || event.altKey === true || event.ctrlKey === true || event.metaKey === true) {
       return;
     }
 
     setKeysDownCurrently(k => k.concat([event.code]));
-    onPress(event.code);
+    onPressReference.current(event.code);
   };
 
   const up = (event) => {
     setKeysDownCurrently(k => k.filter((code) => code !== event.code));
-    onRelease(event.code);
+    onReleaseReference.current(event.code);
   };
 
   useEffect(() => {
