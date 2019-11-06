@@ -6,6 +6,19 @@ import { Mapping, Handler } from "./KeyCommand.js";
 import useKeystrokeMonitor from "./useKeystrokeMonitor.js";
 import "./App.css";
 
+function removeFirst(criteria) {
+  var hasRemoved = false;
+  return (item) => {
+    const shouldRemove = criteria(item);
+    if (shouldRemove === true && hasRemoved === false) {
+      hasRemoved = true;
+      return false;
+    }
+
+    return true;
+  };
+}
+
 function useAudioContext() {
   const context = new (window.webkitAudioContext || window.AudioContext)();
   const ref = useRef(context);
@@ -22,10 +35,14 @@ function useKeyboard(audioContext, voice) {
   };
 
   const release = (note) => {
+    const pitchMatches = (pair) => pair[0] === note.pitch;
+
     setPressed((p) => {
-      const candidates = p.filter((pair) => pair[0] === note.pitch);
-      candidates[0][1].stop(audioContext);
-      return p.filter((pair) => pair[0] !== note.pitch);
+      const candidates = p.filter(pitchMatches);
+      if (candidates.length > 0) {
+        candidates[0][1].stop(audioContext);
+      }
+      return p.filter(removeFirst(pitchMatches));
     });
   };
 
