@@ -41,7 +41,7 @@ export default function Keyboard(props) {
         color: "white",
         display: "inline-block",
         minWidth: `${width}vw`,
-        lineHeight: `${width}vw`,
+        lineHeight: `${basis}vw`,
         minHeight: `${basis}vw`,
         margin: "0.1vw",
         textAlign: "center",
