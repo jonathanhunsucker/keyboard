@@ -27,5 +27,3 @@ export class Handler {
     this.onPress = onPress;
   }
 }
-
-

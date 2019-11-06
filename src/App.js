@@ -3,6 +3,7 @@ import { Note } from "@jonathanhunsucker/music-js";
 import { Gain, Envelope, Wave, silentPingToWakeAutoPlayGates } from "@jonathanhunsucker/audio-js";
 import Keyboard from "./Keyboard.js";
 import { Mapping, Handler } from "./KeyCommand.js";
+import useKeystrokeMonitor from "./useKeystrokeMonitor.js";
 import "./App.css";
 
 function useAudioContext() {
@@ -33,51 +34,6 @@ function useKeyboard(audioContext, voice) {
     press,
     release,
   ];
-}
-
-function useKeyboardMonitor(onPress, onRelease) {
-  const [keysDownCurrently, setKeysDownCurrently] = useState([]);
-
-  const onPressReference = useRef(onPress);
-  const onReleaseReference = useRef(onRelease);
-
-  useEffect(() => {
-    onPressReference.current = onPress;
-    onReleaseReference.current = onRelease;
-  });
-
-  const [put, read] = useDestructiveReadMap({});
-
-  const down = (event) => {
-    if (event.repeat === true || event.altKey === true || event.ctrlKey === true || event.metaKey === true) {
-      return;
-    }
-
-    setKeysDownCurrently(k => k.concat([event.code]));
-    put(event.code, onPressReference.current(event.code));
-  };
-
-  const up = (event) => {
-    setKeysDownCurrently(k => k.filter((code) => code !== event.code));
-    const handler = read(event.code);
-    if (handler === undefined) {
-      return;
-    }
-
-    handler();
-  };
-
-  useEffect(() => {
-    document.addEventListener('keyup', up);
-    document.addEventListener('keydown', down);
-
-    return () => {
-      document.removeEventListener('keyup', up);
-      document.removeEventListener('keydown', down);
-    };
-  }, []);
-
-  return keysDownCurrently;
 }
 
 function App() {
@@ -143,7 +99,7 @@ function App() {
     'Equal': new Handler('+', () => setShift((s) => s + 12)),
   });
 
-  const keysDownCurrently = useKeyboardMonitor((code) => mapping.onPress(code));
+  const keysDownCurrently = useKeystrokeMonitor((code) => mapping.onPress(code));
 
   return (
     <div className="App">
