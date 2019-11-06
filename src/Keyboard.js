@@ -113,7 +113,7 @@ export default function Keyboard(props) {
         {key(",", "Comma")}
         {key(".", "Period")}
         {key("/", "Slash")}
-        {key("shift", null && "ShiftRight", 2.7)}
+        {key("shift", "ShiftRight", 2.7)}
       </div>
     </div>
   );
