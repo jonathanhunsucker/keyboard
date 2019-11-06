@@ -14,25 +14,17 @@ export class Mapping {
   }
   onPress(code) {
     if (this.contains(code) === false) {
-      return;
+      return () => {};
     }
 
-    this.mapping[code].onPress();
-  }
-  onRelease(code) {
-    if (this.contains(code) === false) {
-      return;
-    }
-
-    this.mapping[code].onRelease();
+    return this.mapping[code].onPress();
   }
 }
 
 export class Handler {
-  constructor(label, onPress, onRelease) {
+  constructor(label, onPress) {
     this.label = label;
     this.onPress = onPress;
-    this.onRelease = onRelease;
   }
 }
 

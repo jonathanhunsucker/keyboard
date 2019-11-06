@@ -93,18 +93,25 @@ function useKeyboardMonitor(onPress, onRelease) {
     onReleaseReference.current = onRelease;
   });
 
+  const [put, read] = useDestructiveReadMap({});
+
   const down = (event) => {
     if (event.repeat === true || event.altKey === true || event.ctrlKey === true || event.metaKey === true) {
       return;
     }
 
     setKeysDownCurrently(k => k.concat([event.code]));
-    onPressReference.current(event.code);
+    put(event.code, onPressReference.current(event.code));
   };
 
   const up = (event) => {
     setKeysDownCurrently(k => k.filter((code) => code !== event.code));
-    onReleaseReference.current(event.code);
+    const handler = read(event.code);
+    if (handler === undefined) {
+      return;
+    }
+
+    handler();
   };
 
   useEffect(() => {
@@ -143,20 +150,16 @@ function App() {
     return Note.fromStepsFromMiddleA(note.stepsFromMiddleA + shift);
   };
 
-  const handlePress = (note) => {
-    return () => {
-      press(translate(note));
-    };
-  };
-
-  const handleRelease = (note) => {
+  const noteHandler = (note) => new Handler(translate(note).pitch, () => {
+    press(translate(note));
     return () => {
       release(translate(note));
     };
-  };
-
-  const noteHandler = (note) => new Handler(translate(note).pitch, handlePress(note), handleRelease(note));
-  const actionHandler = (action, label) => new Handler(label, action, () => {});
+  });
+  const actionHandler = (action, label) => new Handler(label, () => {
+    action();
+    return () => {};
+  });
 
   const mapping = new Mapping({
     'KeyZ': noteHandler(Note.fromStepsFromMiddleA(3)),
@@ -191,7 +194,7 @@ function App() {
     'Equal': actionHandler(() => setShift((s) => s + 12), '+'),
   });
 
-  const keysDownCurrently = useKeyboardMonitor((code) => mapping.onPress(code), (code) => mapping.onRelease(code));
+  const keysDownCurrently = useKeyboardMonitor((code) => mapping.onPress(code));
 
   return (
     <div className="App">
