@@ -109,10 +109,6 @@ function App() {
       release(translate(note));
     };
   });
-  const actionHandler = (action, label) => new Handler(label, () => {
-    action();
-    return () => {};
-  });
 
   const mapping = new Mapping({
     'KeyZ': noteHandler(Note.fromStepsFromMiddleA(3)),
@@ -143,8 +139,8 @@ function App() {
     'KeyU': noteHandler(Note.fromStepsFromMiddleA(26)),
     'KeyI': noteHandler(Note.fromStepsFromMiddleA(27)),
 
-    'Minus': actionHandler(() => setShift((s) => s - 12), '-'),
-    'Equal': actionHandler(() => setShift((s) => s + 12), '+'),
+    'Minus': new Handler('-', () => setShift((s) => s - 12)),
+    'Equal': new Handler('+', () => setShift((s) => s + 12)),
   });
 
   const keysDownCurrently = useKeyboardMonitor((code) => mapping.onPress(code));
