@@ -1,9 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
+
 import { Note } from "@jonathanhunsucker/music-js";
 import { Gain, Envelope, Wave, silentPingToWakeAutoPlayGates } from "@jonathanhunsucker/audio-js";
+
 import Keyboard from "./Keyboard.js";
+import Patch from "./Patch.js";
 import { Mapping, Handler } from "./KeyCommand.js";
 import useKeystrokeMonitor from "./useKeystrokeMonitor.js";
+
 import "./App.css";
 
 function removeFirst(criteria) {
@@ -124,6 +128,8 @@ function App() {
       <p>Shift: {shift}</p>
       <p>Level: <input type="range" min="0" step="0.01" max="1.0" value={level} onChange={(e) => {setLevel(e.target.valueAsNumber)}} /></p>
       <Keyboard mapping={mapping} pressed={keysDownCurrently} />
+      <br />
+      <Patch patch={voice} />
     </div>
   );
 }
