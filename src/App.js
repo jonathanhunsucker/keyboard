@@ -38,10 +38,10 @@ function useKeyboard(audioContext, voice) {
 
   const release = (note) => {
     setPressed((p) => {
+      const candidates = p.filter((pair) => pair[0] === note.pitch);
+      candidates[0][1].stop(audioContext);
       return p.filter((pair) => pair[0] !== note.pitch);
     });
-    const candidates = pressed.filter((pair) => pair[0] === note.pitch);
-    candidates[0][1].stop(audioContext);
   };
 
   return [
