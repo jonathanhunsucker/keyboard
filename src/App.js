@@ -75,6 +75,9 @@ function App() {
   const audioContext = useAudioContext();
   const [pressed, press, release] = useKeyboard(audioContext, voice);
   const [shift, setShift] = useState(0);
+  const [mod, setMod] = useState(false);
+
+  const nudgeSize = mod ? 1 : 12;
 
   const translate = (note) => {
     return Note.fromStepsFromMiddleA(note.stepsFromMiddleA + shift);
@@ -116,8 +119,14 @@ function App() {
     'KeyU': noteHandler(Note.fromStepsFromMiddleA(26)),
     'KeyI': noteHandler(Note.fromStepsFromMiddleA(27)),
 
-    'Minus': new Handler('-', () => setShift((s) => s - 12)),
-    'Equal': new Handler('+', () => setShift((s) => s + 12)),
+    'ShiftRight': new Handler('^', () => {
+      setMod(true);
+      return () => {
+        setMod(false);
+      };
+    }),
+    'Minus': new Handler(`-${nudgeSize}`, () => setShift((s) => s - nudgeSize)),
+    'Equal': new Handler(`+${nudgeSize}`, () => setShift((s) => s + nudgeSize)),
   });
 
   const keysDownCurrently = useKeystrokeMonitor((code) => mapping.onPress(code));
