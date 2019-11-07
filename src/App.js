@@ -60,15 +60,17 @@ function useKeyboard(audioContext, voice) {
 function App() {
   const [level, setLevel] = useState(0.1);
 
+  const patch = new Envelope(
+    {},
+    [
+      new Wave('triangle'),
+    ],
+  );
+
   const voice = new Gain(
     level,
     [
-      new Envelope(
-        {},
-        [
-          new Wave('triangle'),
-        ],
-      ),
+      patch,
     ]
   );
 
@@ -138,7 +140,7 @@ function App() {
       <p>Level: <input type="range" min="0" step="0.01" max="1.0" value={level} onChange={(e) => {setLevel(e.target.valueAsNumber)}} /></p>
       <Keyboard mapping={mapping} pressed={keysDownCurrently} />
       <br />
-      <Patch patch={voice} />
+      <Patch patch={patch} />
     </div>
   );
 }
