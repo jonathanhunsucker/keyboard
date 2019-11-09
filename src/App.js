@@ -60,11 +60,13 @@ function useKeyboard(audioContext, voice) {
 function App() {
   const [level, setLevel] = useState(0.1);
 
-  const patch = new Envelope(
-    {},
-    [
-      new Wave('triangle'),
-    ],
+  const [patch, setPatch] = useState(
+    new Envelope(
+      {},
+      [
+        new Wave('triangle'),
+      ],
+    )
   );
 
   const voice = new Gain(
