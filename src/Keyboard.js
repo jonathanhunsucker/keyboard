@@ -40,6 +40,7 @@ export default function Keyboard(props) {
         float: "left",
         color: "white",
         display: "inline-block",
+        fontSize: `${basis/2}vw`,
         minWidth: `${width}vw`,
         lineHeight: `${basis}vw`,
         minHeight: `${basis}vw`,
