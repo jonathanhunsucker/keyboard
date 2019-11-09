@@ -6,7 +6,7 @@ export default function useDestructiveReadMap() {
   const put = (key, value) => {
     map.current = ((m) => {
       const update = {};
-      update[key] = value;
+      update[key] = m.hasOwnProperty(key) ? m[key].concat([value]) : [value];
       const withUpdate = Object.assign({}, m, update);
       return withUpdate;
     })(map.current);
@@ -16,9 +16,16 @@ export default function useDestructiveReadMap() {
     var value;
 
     map.current = ((m) => {
-      value = map[key];
-      const withoutKey = Object.assign({}, map);
-      delete withoutKey[key];
+      const entries = m[key] || [];
+      value = entries[0];
+      const remaining = entries.slice(1);
+      const withoutKey = Object.assign({}, m);
+
+      if (remaining.length >= 1) {
+        withoutKey[key] = remaining;
+      } else {
+        delete withoutKey[key];
+      }
 
       return withoutKey;
     })(map.current);
