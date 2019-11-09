@@ -134,7 +134,17 @@ function App() {
     'Equal': new Handler(`+${nudgeSize}`, () => setShift((s) => s + nudgeSize)),
   });
 
-  const keysDownCurrently = useKeystrokeMonitor((code) => mapping.onPress(code));
+  const [keysDownCurrently, add, remove] = useSet([]);
+
+  const onPress = (code) => {
+    add(code);
+    return mapping.onPress(code);
+  };
+  const onRelease = (code) => {
+    remove(code);
+  };
+
+  useKeystrokeMonitor(onPress, onRelease);
 
   return (
     <div className="App">

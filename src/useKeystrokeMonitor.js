@@ -1,13 +1,13 @@
 import { useRef, useState, useEffect } from "react";
 import useDestructiveReadMap from "./useDestructiveReadMap.js";
 
-export default function useKeystrokeMonitor(onPress) {
-  const [keysDownCurrently, setKeysDownCurrently] = useState([]);
-
+export default function useKeystrokeMonitor(onPress, onRelease) {
   const onPressReference = useRef(onPress);
+  const onReleaseReference = useRef(onRelease);
 
   useEffect(() => {
     onPressReference.current = onPress;
+    onReleaseReference.current = onRelease;
   });
 
   const [put, read] = useDestructiveReadMap({});
@@ -17,18 +17,17 @@ export default function useKeystrokeMonitor(onPress) {
       return;
     }
 
-    setKeysDownCurrently(k => k.concat([event.code]));
     put(event.code, onPressReference.current(event.code));
   };
 
   const up = (event) => {
-    setKeysDownCurrently(k => k.filter((code) => code !== event.code));
     const handler = read(event.code);
     if (!handler) {
       return;
     }
 
     handler();
+    onReleaseReference.current(event.code);
   };
 
   useEffect(() => {
@@ -40,6 +39,4 @@ export default function useKeystrokeMonitor(onPress) {
       document.removeEventListener('keydown', down);
     };
   }, []);
-
-  return keysDownCurrently;
 }
