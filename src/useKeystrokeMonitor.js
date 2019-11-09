@@ -1,15 +1,13 @@
 import { useRef, useState, useEffect } from "react";
 import useDestructiveReadMap from "./useDestructiveReadMap.js";
 
-export default function useKeystrokeMonitor(onPress, onRelease) {
+export default function useKeystrokeMonitor(onPress) {
   const [keysDownCurrently, setKeysDownCurrently] = useState([]);
 
   const onPressReference = useRef(onPress);
-  const onReleaseReference = useRef(onRelease);
 
   useEffect(() => {
     onPressReference.current = onPress;
-    onReleaseReference.current = onRelease;
   });
 
   const [put, read] = useDestructiveReadMap({});
