@@ -6,7 +6,7 @@ function WaveControls(wave, handleControlChange) {
   return (
     <React.Fragment>
       <label htmlFor="type">Type</label>:{' '}
-      <select value={wave.type} readOnly>
+      <select name="type" id="type" value={wave.type} onChange={(e) => handleControlChange(e.target.name, e.target.value)}>
         <option value="triangle">Triangle</option>
         <option value="sine">Sine</option>
         <option value="square">Square</option>
@@ -16,6 +16,10 @@ function WaveControls(wave, handleControlChange) {
 }
 
 function EnvelopeControls(envelope, handleControlChange) {
+  const handleChange = (e) => {
+    handleControlChange(e.target.name, e.target.valueAsNumber);
+  };
+
   return (
     <React.Fragment>
       <label htmlFor="attack">Attack</label>:{' '}
@@ -24,7 +28,7 @@ function EnvelopeControls(envelope, handleControlChange) {
         name="attack"
         type="range"
         value={envelope.attack}
-        readOnly
+        onChange={handleChange}
         min="0" step="0.01" max="1"
       />
       <br />
@@ -34,7 +38,7 @@ function EnvelopeControls(envelope, handleControlChange) {
         name="decay"
         type="range"
         value={envelope.decay}
-        readOnly
+        onChange={handleChange}
         min="0" step="0.01" max="1"
       />
       <br />
@@ -44,7 +48,7 @@ function EnvelopeControls(envelope, handleControlChange) {
         name="sustain"
         type="range"
         value={envelope.sustain}
-        readOnly
+        onChange={handleChange}
         min="0" step="0.01" max="1"
       />
       <br />
@@ -54,7 +58,7 @@ function EnvelopeControls(envelope, handleControlChange) {
         name="release"
         type="range"
         value={envelope.release}
-        readOnly
+        onChange={handleChange}
         min="0" step="0.01" max="1"
       />
     </React.Fragment>
