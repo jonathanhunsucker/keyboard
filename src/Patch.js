@@ -117,7 +117,6 @@ function StageTree(stage, setStage) {
               {StageTree(upstream, (updated) => rewriteUpstream(updated, index))}
             </React.Fragment>;
           })}
-          <center>⟱</center>
         </React.Fragment>
       }
       {Stage(stage, (updated) => rewriteStage(updated))}
