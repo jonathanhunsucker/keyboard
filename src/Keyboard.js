@@ -35,19 +35,21 @@ export default function Keyboard(props) {
     const width = span * basis;
 
     return (
-      <div style={{
-        background: codeToColor(code),
-        float: "left",
-        color: "white",
-        display: "inline-block",
-        fontSize: `${basis/2}vw`,
-        minWidth: `${width}vw`,
-        lineHeight: `${basis}vw`,
-        minHeight: `${basis}vw`,
-        margin: "0.1vw",
-        textAlign: "center",
-        verticalAlign: "middle",
-      }}>
+      <div
+        style={{
+          background: codeToColor(code),
+          float: "left",
+          color: "white",
+          display: "inline-block",
+          fontSize: `${basis/2}vw`,
+          minWidth: `${width}vw`,
+          lineHeight: `${basis}vw`,
+          minHeight: `${basis}vw`,
+          margin: "0.1vw",
+          textAlign: "center",
+          verticalAlign: "middle",
+        }}
+        >
         {asdf(code, props.mapping.label(code))}
       </div>
     );
