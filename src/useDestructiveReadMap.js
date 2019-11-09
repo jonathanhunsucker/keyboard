@@ -1,26 +1,27 @@
-import { useState } from "react";
+import { useRef } from "react";
 
-export default function useDestructiveReadMap(initialState) {
-  const [map, setMap] = useState(initialState);
+export default function useDestructiveReadMap() {
+  const map = useRef([]);
 
   const put = (key, value) => {
-    setMap((m) => {
+    map.current = ((m) => {
       const update = {};
       update[key] = value;
       const withUpdate = Object.assign({}, m, update);
       return withUpdate;
-    });
+    })(map.current);
   };
 
   const read = (key) => {
     var value;
 
-    setMap((map) => {
+    map.current = ((m) => {
       value = map[key];
       const withoutKey = Object.assign({}, map);
       delete withoutKey[key];
+
       return withoutKey;
-    });
+    })(map.current);
 
     return value;
   };
