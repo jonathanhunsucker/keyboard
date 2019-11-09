@@ -34,6 +34,19 @@ export default function Keyboard(props) {
     const basis = 7;
     const width = span * basis;
 
+    const onPointerDown = (e) => {
+      e.target.setPointerCapture(e.pointerId);
+      props.onPress(code);
+    };
+
+    const onPointerUp = (e) => {
+      props.onRelease(code);
+    };
+
+    const onPointerCancel = (e) => {
+      props.onRelease(code);
+    };
+
     return (
       <div
         style={{
@@ -49,8 +62,9 @@ export default function Keyboard(props) {
           textAlign: "center",
           verticalAlign: "middle",
         }}
-        onPointerDown={() => props.onPress(code)}
-        onPointerUp={() => props.onRelease(code)}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerCancel}
         >
         {asdf(code, props.mapping.label(code))}
       </div>
