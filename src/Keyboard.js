@@ -49,6 +49,8 @@ export default function Keyboard(props) {
           textAlign: "center",
           verticalAlign: "middle",
         }}
+        onPointerDown={() => props.onPress(code)}
+        onPointerUp={() => props.onRelease(code)}
         >
         {asdf(code, props.mapping.label(code))}
       </div>

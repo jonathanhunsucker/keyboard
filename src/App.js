@@ -157,7 +157,7 @@ function App() {
       <h1>Keyboard</h1>
       <p>Shift: {shift}</p>
       <p>Level: <input type="range" min="0" step="0.01" max="1.0" value={level} onChange={(e) => {setLevel(e.target.valueAsNumber)}} /></p>
-      <Keyboard mapping={mapping} pressed={keysDownCurrently} />
+      <Keyboard mapping={mapping} pressed={keysDownCurrently} onPress={onPress} onRelease={onRelease} />
       <br />
       <Patch patch={patch} setPatch={setPatch} />
     </div>
