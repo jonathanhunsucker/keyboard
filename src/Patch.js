@@ -19,16 +19,44 @@ function EnvelopeControls(envelope, handleControlChange) {
   return (
     <React.Fragment>
       <label htmlFor="attack">Attack</label>:{' '}
-      <input id="attack" name="attack" type="range"  value={envelope.attack} readOnly min="0" step="0.01" max="1" />
+      <input
+        id="attack"
+        name="attack"
+        type="range"
+        value={envelope.attack}
+        readOnly
+        min="0" step="0.01" max="1"
+      />
       <br />
       <label htmlFor="decay">Decay</label>:{' '}
-      <input id="decay" name="decay" type="range" value={envelope.decay} readOnly min="0" step="0.01" max="1" />
+      <input
+        id="decay"
+        name="decay"
+        type="range"
+        value={envelope.decay}
+        readOnly
+        min="0" step="0.01" max="1"
+      />
       <br />
       <label htmlFor="sustain">Sustain</label>:{' '}
-      <input id="sustain" name="sustain" type="range" value={envelope.sustain} readOnly min="0" step="0.01" max="1" />
+      <input
+        id="sustain"
+        name="sustain"
+        type="range"
+        value={envelope.sustain}
+        readOnly
+        min="0" step="0.01" max="1"
+      />
       <br />
       <label htmlFor="Release">Release</label>:{' '}
-      <input id="release" name="release" type="range" value={envelope.release} readOnly min="0" step="0.01" max="1" />
+      <input
+        id="release"
+        name="release"
+        type="range"
+        value={envelope.release}
+        readOnly
+        min="0" step="0.01" max="1"
+      />
     </React.Fragment>
   );
 }
