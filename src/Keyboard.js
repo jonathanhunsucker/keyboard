@@ -31,7 +31,7 @@ export default function Keyboard(props) {
 
   function key(label, code, span) {
     span = span || 1;
-    const basis = 6;
+    const basis = 7;
     const width = span * basis;
 
     return (
@@ -55,7 +55,7 @@ export default function Keyboard(props) {
   return (
     <div>
       <div style={{overflow: "auto", with: "100%"}}>
-        {key("`", null && "Backquote")}
+        {null && key("`", null && "Backquote")}
         {key("1", "Digit1")}
         {key("2", "Digit2")}
         {key("3", "Digit3")}
@@ -68,10 +68,10 @@ export default function Keyboard(props) {
         {key("0", "Digit0")}
         {key("-", "Minus")}
         {key("=", "Equal")}
-        {key("delete", null && "Backspace", 1.5)}
+        {null && key("delete", null && "Backspace", 1.5)}
       </div>
       <div style={{overflow: "auto", with: "100%"}}>
-        {key("tab", null && "Tab", 1.5)}
+        {key("tab", null && "Tab", 0.5)}
         {key("q", "KeyQ")}
         {key("w", "KeyW")}
         {key("e", "KeyE")}
@@ -84,10 +84,10 @@ export default function Keyboard(props) {
         {key("p", "KeyP")}
         {key("[", "BracketLeft")}
         {key("]", "BracketRight")}
-        {key("\\", null && "Backslash")}
+        {null && key("\\", null && "Backslash")}
       </div>
       <div style={{overflow: "auto", with: "100%"}}>
-        {key("caps lock", null && "", 1.8)}
+        {key("caps lock", null && "", 0.8)}
         {key("a", "KeyA")}
         {key("s", "KeyS")}
         {key("d", "KeyD")}
@@ -99,10 +99,10 @@ export default function Keyboard(props) {
         {key("l", "KeyL")}
         {key(";", "Semicolon")}
         {key("&#39;", "Quote")}
-        {key("return", null && "Enter", 1.8)}
+        {null && key("return", null && "Enter", 1.8)}
       </div>
       <div style={{overflow: "auto", with: "100%"}}>
-        {key("shift", null && "ShiftLeft", 2)}
+        {key("shift", null && "ShiftLeft", 1)}
         {key("z", "KeyZ")}
         {key("x", "KeyX")}
         {key("c", "KeyC")}
@@ -113,7 +113,7 @@ export default function Keyboard(props) {
         {key(",", "Comma")}
         {key(".", "Period")}
         {key("/", "Slash")}
-        {key("shift", "ShiftRight", 2.7)}
+        {key("shift", "ShiftRight", 1.5)}
       </div>
     </div>
   );
