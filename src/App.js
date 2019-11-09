@@ -7,6 +7,7 @@ import Keyboard from "./Keyboard.js";
 import Patch from "./Patch.js";
 import { Mapping, Handler } from "./KeyCommand.js";
 import useKeystrokeMonitor from "./useKeystrokeMonitor.js";
+import useSet from "./useSet.js";
 
 import "./App.css";
 
