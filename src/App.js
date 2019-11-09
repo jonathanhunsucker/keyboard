@@ -8,6 +8,7 @@ import Patch from "./Patch.js";
 import { Mapping, Handler } from "./KeyCommand.js";
 import useKeystrokeMonitor from "./useKeystrokeMonitor.js";
 import useSet from "./useSet.js";
+import useDestructiveReadMap from "./useDestructiveReadMap.js";
 
 import "./App.css";
 
@@ -135,13 +136,18 @@ function App() {
   });
 
   const [keysDownCurrently, add, remove] = useSet([]);
+  const [put, read] = useDestructiveReadMap({});
 
   const onPress = (code) => {
     add(code);
-    return mapping.onPress(code);
+    put(code, mapping.onPress(code));
   };
   const onRelease = (code) => {
     remove(code);
+    const handler = read(code);
+    if (handler) {
+      handler();
+    }
   };
 
   useKeystrokeMonitor(onPress, onRelease);
