@@ -142,7 +142,7 @@ function App() {
       <p>Level: <input type="range" min="0" step="0.01" max="1.0" value={level} onChange={(e) => {setLevel(e.target.valueAsNumber)}} /></p>
       <Keyboard mapping={mapping} pressed={keysDownCurrently} />
       <br />
-      <Patch patch={patch} />
+      <Patch patch={patch} setPatch={setPatch} />
     </div>
   );
 }

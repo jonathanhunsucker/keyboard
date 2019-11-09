@@ -2,7 +2,7 @@ import React from "react";
 
 import { Wave, Gain, Envelope } from "@jonathanhunsucker/audio-js";
 
-function WaveControls(wave) {
+function WaveControls(wave, handleControlChange) {
   return (
     <React.Fragment>
       <label htmlFor="type">Type</label>:{' '}
@@ -15,7 +15,7 @@ function WaveControls(wave) {
   );
 }
 
-function EnvelopeControls(envelope) {
+function EnvelopeControls(envelope, handleControlChange) {
   return (
     <React.Fragment>
       <label htmlFor="attack">Attack</label>:{' '}
@@ -37,44 +37,62 @@ function UnknownControls(unknown) {
   return "Unknown controls";
 }
 
-function ControlsDelegate(stage) {
+function ControlsDelegate(stage, handleControlChange) {
   switch (stage.kind) {
     case Wave.kind:
-      return WaveControls(stage);
+      return WaveControls(stage, handleControlChange);
     case Envelope.kind:
-      return EnvelopeControls(stage);
+      return EnvelopeControls(stage, handleControlChange);
     default:
-      return UnknownControls(stage);
+      return UnknownControls(stage, handleControlChange);
   }
 }
 
-function Stage(stage) {
+function Stage(stage, setStage) {
+  const handleControlChange = (name, value) => {
+    const updated = stage.constructor.parse(Object.assign({}, stage.toJSON(), {[name]: value}));
+    setStage(updated);
+  };
+
   return (
     <form>
       <fieldset>
-        <legend style={{textTransform: "capitalize"}}>{stage.kind}</legend>
-        {ControlsDelegate(stage)}
+        <legend style={{textTransform: "capitalize"}}>{stage.toJSON().kind}</legend>
+        {ControlsDelegate(stage.toJSON(), handleControlChange)}
       </fieldset>
     </form>
   );
 }
 
-function StageTree(stage) {
+function StageTree(stage, setStage) {
+  const rewriteUpstream = (updated, index) => {
+    const json = stage.toJSON();
+    json.upstreams[index] = updated.toJSON();
+    const rewritten = stage.constructor.parse(json);
+    setStage(rewritten);
+  };
+
+  const rewriteStage = (updated) => {
+    setStage(updated);
+  };
+
   return (
     <React.Fragment>
       {stage.upstreams &&
         <React.Fragment>
           {stage.upstreams.map((upstream, index) => {
-            return <React.Fragment key={index}>{StageTree(upstream)}</React.Fragment>;
+            return <React.Fragment key={index}>
+              {StageTree(upstream, (updated) => rewriteUpstream(updated, index))}
+            </React.Fragment>;
           })}
           <center>⟱</center>
         </React.Fragment>
       }
-      {Stage(stage.toJSON())}
+      {Stage(stage, (updated) => rewriteStage(updated))}
     </React.Fragment>
   );
 }
 
 export default function Patch(props) {
-  return StageTree(props.patch);
+  return StageTree(props.patch, props.setPatch);
 }
