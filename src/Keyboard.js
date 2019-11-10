@@ -1,155 +1,159 @@
 import React, { useRef, useState, useEffect } from "react";
 
+function codeToColor(mapping, pressed, code) {
+  if (code === null) {
+    return "transparent";
+  }
+
+  if (mapping.contains(code) === false) {
+    return "lightgrey";
+  }
+
+  if (pressed.indexOf(code) === -1) {
+    return "grey";
+  }
+
+  return "black";
+}
+
+function label(mapping, pressed, code) {
+  if (mapping.contains(code) === false) {
+    return "";
+  }
+
+  if (pressed.indexOf(code) === -1) {
+    return mapping.label(code);
+  }
+
+  return <b>{mapping.label(code)}</b>;
+}
+
+function key(code, span) {
+  return {
+    code: code,
+    span: span || 1,
+  };
+}
+
+function offset(span) {
+  return key(null, span);
+}
+
+function square(mapping, pressed, onPress, onRelease, key) {
+  const basis = 7;// TODO dynamica calculation
+  const width = key.span * basis;
+
+  const onPointerDown = (e) => {
+    e.target.setPointerCapture(e.pointerId);
+    onPress(key.code);
+  };
+
+  const onPointerUp = (e) => {
+    onRelease(key.code);
+  };
+
+  const onPointerCancel = (e) => {
+    onRelease(key.code);
+  };
+
+  return (
+    <div
+      key={key.code}
+      style={{
+        background: codeToColor(mapping, pressed, key.code),
+        float: "left",
+        color: "white",
+        display: "inline-block",
+        fontSize: `${basis/2}vw`,
+        minWidth: `${width}vw`,
+        lineHeight: `${basis}vw`,
+        minHeight: `${basis}vw`,
+        margin: "0.1vw",
+        textAlign: "center",
+        verticalAlign: "middle",
+      }}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerCancel}
+      >
+      {label(mapping, pressed, key.code)}
+    </div>
+  );
+}
+
 export default function Keyboard(props) {
-  function codeToColor(code) {
-    if (code === null) {
-      return "transparent";
-    }
-
-    if (props.mapping.contains(code) === false) {
-      return "lightgrey";
-    }
-
-    if (props.pressed.indexOf(code) === -1) {
-      return "grey";
-    }
-
-    return "black";
-  }
-
-  function asdf(code, label) {
-    if (props.mapping.contains(code) === false) {
-      return "";
-    }
-
-    if (props.pressed.indexOf(code) === -1) {
-      return label;
-    }
-
-    return <b>{label}</b>;
-  }
-
-  function key(label, code, span) {
-    span = span || 1;
-    const basis = 7;
-    const width = span * basis;
-
-    const onPointerDown = (e) => {
-      e.target.setPointerCapture(e.pointerId);
-      props.onPress(code);
-    };
-
-    const onPointerUp = (e) => {
-      props.onRelease(code);
-    };
-
-    const onPointerCancel = (e) => {
-      props.onRelease(code);
-    };
-
-    return (
-      <div
-        style={{
-          background: codeToColor(code),
-          float: "left",
-          color: "white",
-          display: "inline-block",
-          fontSize: `${basis/2}vw`,
-          minWidth: `${width}vw`,
-          lineHeight: `${basis}vw`,
-          minHeight: `${basis}vw`,
-          margin: "0.1vw",
-          textAlign: "center",
-          verticalAlign: "middle",
-        }}
-        onPointerDown={onPointerDown}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerCancel}
-        >
-        {asdf(code, props.mapping.label(code))}
-      </div>
-    );
-  }
+  const layout = [
+    [
+      key("Digit1"),
+      key("Digit2"),
+      key("Digit3"),
+      key("Digit4"),
+      key("Digit5"),
+      key("Digit6"),
+      key("Digit7"),
+      key("Digit8"),
+      key("Digit9"),
+      key("Digit0"),
+      key("Minus"),
+      key("Equal"),
+    ],
+    [
+      offset(0.5),
+      key("KeyQ"),
+      key("KeyW"),
+      key("KeyE"),
+      key("KeyR"),
+      key("KeyT"),
+      key("KeyY"),
+      key("KeyU"),
+      key("KeyI"),
+      key("KeyO"),
+      key("KeyP"),
+      key("BracketLeft"),
+      key("BracketRight"),
+    ],
+    [
+      offset(0.8),
+      key("KeyA"),
+      key("KeyS"),
+      key("KeyD"),
+      key("KeyF"),
+      key("KeyG"),
+      key("KeyH"),
+      key("KeyJ"),
+      key("KeyK"),
+      key("KeyL"),
+      key("Semicolon"),
+      key("Quote"),
+    ],
+    [
+      offset(1),
+      key("KeyZ"),
+      key("KeyX"),
+      key("KeyC"),
+      key("KeyV"),
+      key("KeyB"),
+      key("KeyN"),
+      key("KeyM"),
+      key("Comma"),
+      key("Period"),
+      key("Slash"),
+      key("ShiftRight", 1.5),
+    ],
+  ];
 
   return (
     <div>
-      <div style={{overflow: "auto", with: "100%"}}>
-        {null && key("`", null && "Backquote")}
-        {key("1", "Digit1")}
-        {key("2", "Digit2")}
-        {key("3", "Digit3")}
-        {key("4", "Digit4")}
-        {key("5", "Digit5")}
-        {key("6", "Digit6")}
-        {key("7", "Digit7")}
-        {key("8", "Digit8")}
-        {key("9", "Digit9")}
-        {key("0", "Digit0")}
-        {key("-", "Minus")}
-        {key("=", "Equal")}
-        {null && key("delete", null && "Backspace", 1.5)}
-      </div>
-      <div style={{overflow: "auto", with: "100%"}}>
-        {key("tab", null && "Tab", 0.5)}
-        {key("q", "KeyQ")}
-        {key("w", "KeyW")}
-        {key("e", "KeyE")}
-        {key("r", "KeyR")}
-        {key("t", "KeyT")}
-        {key("y", "KeyY")}
-        {key("u", "KeyU")}
-        {key("i", "KeyI")}
-        {key("o", "KeyO")}
-        {key("p", "KeyP")}
-        {key("[", "BracketLeft")}
-        {key("]", "BracketRight")}
-        {null && key("\\", null && "Backslash")}
-      </div>
-      <div style={{overflow: "auto", with: "100%"}}>
-        {key("caps lock", null && "", 0.8)}
-        {key("a", "KeyA")}
-        {key("s", "KeyS")}
-        {key("d", "KeyD")}
-        {key("f", "KeyF")}
-        {key("g", "KeyG")}
-        {key("h", "KeyH")}
-        {key("j", "KeyJ")}
-        {key("k", "KeyK")}
-        {key("l", "KeyL")}
-        {key(";", "Semicolon")}
-        {key("&#39;", "Quote")}
-        {null && key("return", null && "Enter", 1.8)}
-      </div>
-      <div style={{overflow: "auto", with: "100%"}}>
-        {key("shift", null && "ShiftLeft", 1)}
-        {key("z", "KeyZ")}
-        {key("x", "KeyX")}
-        {key("c", "KeyC")}
-        {key("v", "KeyV")}
-        {key("b", "KeyB")}
-        {key("n", "KeyN")}
-        {key("m", "KeyM")}
-        {key(",", "Comma")}
-        {key(".", "Period")}
-        {key("/", "Slash")}
-        {key("shift", "ShiftRight", 1.5)}
-      </div>
+      {layout.map((row, i) => {
+        return (
+          <div key={i} style={{overflow: "auto", with: "100%"}}>
+            {row.map((item, j) => {
+              return square(props.mapping, props.pressed, props.onPress, props.onRelease, item);
+            })}
+          </div>
+        );
+      })}
     </div>
   );
-
-  /*
-        <tr>
-          {key("control", "ControlLeft")}
-          {key("alt", "AltLeft")}
-          {key("cmd", "MetaLeft")}
-          {key("space", "Space", 16)}
-          {key("cmd", "MetaRight")}
-          {key("option", "AltRight")}
-          {key("left", "ArrowLeft")}
-          {key("down", "ArrowDown")}
-          {key("up", "ArrowUp")}
-          {key("right", "ArrowRight")}
-        </tr>
-  */
 }
 
