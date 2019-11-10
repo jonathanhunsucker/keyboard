@@ -10,6 +10,7 @@ function WaveControls(wave, handleControlChange) {
         <option value="triangle">Triangle</option>
         <option value="sine">Sine</option>
         <option value="square">Square</option>
+        <option value="sawtooth">Sawtooth</option>
       </select>
     </React.Fragment>
   );
