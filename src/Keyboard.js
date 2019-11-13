@@ -1,5 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 
+const MARGIN = 0.1;
+
 function codeToColor(mapping, pressed, code) {
   if (code === null) {
     return "transparent";
@@ -39,8 +41,8 @@ export function offset(span) {
   return key(null, span);
 }
 
-function square(mapping, pressed, onPress, onRelease, key) {
-  const basis = 7;// TODO dynamica calculation
+function square(maxWidth, mapping, pressed, onPress, onRelease, key) {
+  const basis = 100.0 / maxWidth;
   const width = key.span * basis;
 
   const onPointerDown = (e) => {
@@ -68,7 +70,7 @@ function square(mapping, pressed, onPress, onRelease, key) {
         minWidth: `${width}vw`,
         lineHeight: `${basis}vw`,
         minHeight: `${basis}vw`,
-        margin: "0.1vw",
+        margin: `${MARGIN}vw`,
         textAlign: "center",
         verticalAlign: "middle",
       }}
@@ -81,14 +83,26 @@ function square(mapping, pressed, onPress, onRelease, key) {
   );
 }
 
+function max(accumulator, item) {
+  return Math.max(accumulator, item);
+}
+
+function sum(accumulator, item) {
+  return accumulator + item;
+}
+
 export function Keyboard(props) {
+  const maxWidth = props.layout
+    .map((row) => row.map((item) => item.span).reduce(sum, 0) + row.length * MARGIN)
+    .reduce(max, 0);
+
   return (
     <div>
       {props.layout.map((row, i) => {
         return (
           <div key={i} style={{overflow: "auto", with: "100%"}}>
             {row.map((item, j) => {
-              return square(props.mapping, props.pressed, props.onPress, props.onRelease, item);
+              return square(maxWidth, props.mapping, props.pressed, props.onPress, props.onRelease, item);
             })}
           </div>
         );
